@@ -2,7 +2,7 @@ import mongoose, { Schema, Types } from "mongoose";
 
 const blogSchema = new Schema({
     userId:{
-        type: Types.ObjectId,
+        type: String,
         required: true
     },
     postedBy:{

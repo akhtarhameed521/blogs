@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/layout/Sidebar";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-import { createBlog } from "@/store/api";
 import { useBlogStore } from "@/store/store";
 import Link from "next/link";
 
@@ -14,7 +13,6 @@ export default function PostPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
-  const [category, setCategory] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const { createBlog } = useBlogStore();
@@ -29,7 +27,7 @@ export default function PostPage() {
         title,
         content,
         tags: tags.split(",").map((tag) => tag.trim()),
-        category,
+        
         images,
       };
 
@@ -99,18 +97,8 @@ export default function PostPage() {
             className="w-full mt-6 mb-6 px-4 py-2 border rounded-md"
           />
 
-          {/* Category Select Dropdown */}
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full mb-6 px-4 py-2 border rounded-md bg-white text-gray-800"
-          >
-            <option value="">Select Category</option>
-            <option value="Technology">Technology</option>
-            <option value="Fashion">Fashion</option>
-            <option value="Health and Fitness">Health and Fitness</option>
-            <option value="Business Blogs">Business Blogs</option>
-          </select>
+          
+         
         </div>
 
         {/* Preview Modal */}
@@ -121,7 +109,7 @@ export default function PostPage() {
               <h2>{title}</h2>
               <div dangerouslySetInnerHTML={{ __html: content }} />
               <p>Tags: {tags}</p>
-              <p>Category: {category}</p>
+             
               {images.length > 0 && (
                 <div>
                   <strong>Uploaded Images:</strong>

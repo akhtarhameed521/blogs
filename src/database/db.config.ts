@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-const url = "mongodb+srv://bhurtsahab786521:akhtar123@cluster0.byxbvz9.mongodb.net/blogs?retryWrites=true&w=majority&appName=Cluster0"
+const url = process.env.NEXT_PUBLIC_MONGO_DB_URI
 
 export const connectDB = async ()=>{
     try {
-        await mongoose.connect(url);
+        await mongoose.connect(url as string);
         console.log("Database connected");
         
     } catch (error) {

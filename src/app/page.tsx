@@ -1,33 +1,41 @@
-"use client";
+"use client"
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useBlogStore } from "@/store/store";
 import Image from "next/image";
-import { images } from "@/components/export-images";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
-  const { data, status } = useSession();
+  const {  status } = useSession();
   const { blogs = [], getBlogs } = useBlogStore();
-  const [loading, setLoading] = useState <boolean> (true);
-  const [page, setPage] = useState <number> (1); 
-  const limit : number = 10; 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [search, setSearch] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const limit: number = 10;
   const router = useRouter();
-  const [sortOrder, setSortOrder] = useState <string> ("latest"); 
 
   useEffect(() => {
     setLoading(true);
-    getBlogs(undefined, page, limit, "", sortOrder ).finally(() => setLoading(false)); 
-  }, [status, getBlogs, page, sortOrder]);
+    getBlogs(undefined, page, limit, search).finally(() =>
+      setLoading(false)
+    );
+  }, [status, getBlogs, page]);
+
+  const handleSearch = () => {
+    setLoading(true);
+    setPage(1); // Reset to the first page for new search results
+    getBlogs(undefined, 1, limit, search).finally(() =>
+      setLoading(false)
+    );
+  };
 
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
 
-  const handleSortOrder = (order: string) => {
-    setSortOrder(order);
-    setPage(1); // Reset to the first page on sort change
-  };
+  
 
   if (loading) {
     return (
@@ -59,26 +67,39 @@ export default function Home() {
 
   if (status === "unauthenticated") {
     return (
-      <div className="w-full h-[87.5vh] flex items-center justify-center bg-gradient-to-r from-gray-50 to-gray-100">
-  <div className="text-center max-w-2xl p-6 rounded-lg shadow-lg bg-white">
-    <h1 className="text-4xl font-extrabold mb-3 text-indigo-600">
-      Tech Insights & Innovation
-    </h1>
-    <h2 className="text-2xl font-semibold mb-4 text-gray-700">
-      Stay Ahead in the World of Technology
-    </h2>
-    <p className="text-gray-600 mb-6">
-      Your go-to source for the latest in tech trends, expert tips, and deep
-      dives into the innovations shaping our future. Discover, learn, and stay
-      inspired with exclusive content crafted for tech enthusiasts and
-      professionals alike.
-    </p>
-    <Button >
-      Get Started
-    </Button>
-  </div>
-</div>
+      <section className=" mt-16 relative w-full max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 flex flex-col items-center md:flex-row">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 ">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+            Elevate Your Tech Knowledge
+          </h1>
+          <p className="mt-4 text-lg text-gray-700 max-w-md">
+            Explore insights, trends, and guides to stay ahead in the
+            ever-evolving tech world. Curated articles by industry leaders and
+            experts.
+          </p>
 
+          <div className="mt-6 ">
+            <Link href={"/blogs"}>
+              <Button>Start Reading</Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Image Section */}
+        <div className="relative mt-10 md:mt-0 md:w-1/2 h-72 md:h-96 w-full">
+          <Image
+            src="/blog.jpg"
+            alt="Tech Blog Hero"
+            layout="fill"
+            objectFit="cover"
+            className="rounded-lg shadow-lg"
+            priority
+          />
+        </div>
+
+        {/* Optional Gradient Overlay for Style */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-700 via-transparent to-gray-100 opacity-90 -z-10 pointer-events-none"></div>
+      </section>
     );
   }
 
@@ -87,23 +108,23 @@ export default function Home() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Blog Posts Column */}
         <div className="col-span-2 space-y-6">
-        <div className="flex gap-4 mb-5">
-        <Button onClick={() => handleSortOrder("latest")} disabled={sortOrder === "latest"}>
-          Latest
-        </Button>
-        <Button onClick={() => handleSortOrder("older")} disabled={sortOrder === "older"}>
-          Older
-        </Button>
-      </div>
+          <div className="flex gap-2">
+            <Input
+              className="bg-white"
+              placeholder="Search your blog here"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button onClick={handleSearch}>Search</Button>
+          </div>
+         
 
           {blogs.length ? (
-            blogs.map((blog: CreateBlogTypes ) => (
+            blogs.map((blog) => (
               <div key={blog._id} className="p-5 bg-white shadow-lg rounded-lg">
                 <div className="flex gap-5 capitalize mb-5">
                   <Image
-                    src={`${
-                      blog.userImage ? blog.userImage : "/avatar.svg" 
-                    }`}
+                    src={`${blog.userImage ? blog.userImage : "/avatar.svg"}`}
                     height={40}
                     width={40}
                     alt="avatar"
@@ -160,32 +181,75 @@ export default function Home() {
             </Button>
           </div>
         </div>
-
         {/* Sidebar Column */}
         <aside className="space-y-6">
-          <div className="p-5 bg-white shadow-lg rounded-lg">
-            <h3 className="text-xl font-semibold mb-3">Top Discussions</h3>
-            <ul className="space-y-2">
-              <li>How to Improve Blog Writing</li>
-              <li>The Future of Web Development</li>
-              <li>Tips for Learning JavaScript</li>
-            </ul>
-          </div>
-          <div className="p-5 bg-white shadow-lg rounded-lg">
-            <h3 className="text-xl font-semibold mb-3">Top Tags</h3>
-            <div className="flex flex-wrap gap-2">
-              <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
-                JavaScript
-              </span>
-              <span className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full">
-                Web Development
-              </span>
-              <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full">
-                React
-              </span>
-            </div>
-          </div>
-        </aside>
+  {/* Top Discussions */}
+  <div className="p-5 bg-white shadow-lg rounded-lg">
+    <h3 className="text-xl font-semibold mb-3">Top Discussions</h3>
+    <ul className="space-y-2">
+      <li>How to Improve Blog Writing</li>
+      <li>The Future of Web Development</li>
+      <li>Tips for Learning JavaScript</li>
+      <li>AI in Software Development</li>
+      <li>Scaling Applications Efficiently</li>
+    </ul>
+  </div>
+
+  {/* Top Tags */}
+  <div className="p-5 bg-white shadow-lg rounded-lg">
+    <h3 className="text-xl font-semibold mb-3">Top Tags</h3>
+    <div className="flex flex-wrap gap-2">
+      <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
+        JavaScript
+      </span>
+      <span className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full">
+        Web Development
+      </span>
+      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full">
+        React
+      </span>
+      <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+        Node.js
+      </span>
+      <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
+        AI & ML
+      </span>
+    </div>
+  </div>
+
+  {/* Popular Authors */}
+  <div className="p-5 bg-white shadow-lg rounded-lg">
+    <h3 className="text-xl font-semibold mb-3">Popular Authors</h3>
+    <ul className="space-y-2">
+      <li>John Doe - React & JavaScript Expert</li>
+      <li>Jane Smith - Full Stack Developer</li>
+      <li>Mark T. - Cloud & DevOps Specialist</li>
+    </ul>
+  </div>
+
+  {/* Recent Articles */}
+  <div className="p-5 bg-white shadow-lg rounded-lg">
+    <h3 className="text-xl font-semibold mb-3">Recent Articles</h3>
+    <ul className="space-y-2">
+      <li>Understanding the DOM in Depth</li>
+      <li>React's Newest Features Explained</li>
+      <li>Optimizing Web Performance</li>
+      <li>Security Tips for Web Developers</li>
+    </ul>
+  </div>
+
+  {/* Recommended Resources */}
+  <div className="p-5 bg-white shadow-lg rounded-lg">
+    <h3 className="text-xl font-semibold mb-3">Recommended Resources</h3>
+    <ul className="space-y-2">
+      <li><a href="#" className="text-indigo-600 hover:underline">MDN Web Docs</a></li>
+      <li><a href="#" className="text-indigo-600 hover:underline">JavaScript.info</a></li>
+      <li><a href="#" className="text-indigo-600 hover:underline">Frontend Masters</a></li>
+      <li><a href="#" className="text-indigo-600 hover:underline">CSS-Tricks</a></li>
+    </ul>
+  </div>
+</aside>
+        {/* ... Sidebar code here */}
       </div>
     </div>
   );

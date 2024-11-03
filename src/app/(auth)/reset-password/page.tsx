@@ -6,7 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 
 interface ResetPasswordTypes {
-  token: string; // Ensure token is a string
+  token: string; 
   password: string;
   confirmPassword: string;
 }

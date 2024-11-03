@@ -3,16 +3,13 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { images } from "../export-images";
 import Image from "next/image";
-import { Search, UserRoundCog, Menu, X } from "lucide-react";
+import {  Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Badge } from "../ui/badge";
+
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-  const [active, setIsActive] = useState(false);
-  const [showDropdown, setShowDropDown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const { status } = useSession();
   const pathname = usePathname(); // Get the current pathname
@@ -51,10 +48,7 @@ export default function Navbar() {
 
           {/* User Buttons */}
           <div className="flex gap-4 items-center ml-auto">
-            <Search
-              className="cursor-pointer hidden md:block"
-              onClick={() => setShowDropDown(!showDropdown)}
-            />
+            
 
             {status === "authenticated" ? (
               <div className="hidden md:flex gap-4">
@@ -158,37 +152,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Search Dropdown */}
-        <div
-          className={`${
-            !showDropdown ? "hidden" : ""
-          } flex flex-col items-center justify-evenly absolute top-[100%] right-[10%] border border-slate-200 p-5 rounded-md text-center w-[80%] md:w-[30%] h-[30vh] capitalize shadow-black shadow-md bg-white`}
-        >
-          <div className="w-full flex justify-end">
-            <X
-              className="cursor-pointer"
-              onClick={() => setShowDropDown(!showDropdown)}
-            />
-          </div>
-          <h2 className="font-semibold text-md">
-            What are you looking for here
-          </h2>
-          <div className="relative w-full">
-            <Input placeholder="Start typing ...." />
-            <Button className="absolute top-0 right-0">Search</Button>
-          </div>
-          <div className="flex gap-3 mt-4">
-            <Badge variant="outline" className="cursor-pointer">
-              Sports
-            </Badge>
-            <Badge variant="outline" className="cursor-pointer">
-              Travel
-            </Badge>
-            <Badge variant="outline" className="cursor-pointer">
-              Technology
-            </Badge>
-          </div>
-        </div>
+       
       </div>
     </>
   );

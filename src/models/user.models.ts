@@ -1,6 +1,16 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const userSchema = new Schema({
+    _id: {
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId(),  // Generates ObjectId for MongoDB
+    },
+    googleId: {
+        type: String,
+        unique: true,
+        required: false,
+        
+    },
     name:{
         type: String,
         required: true,
@@ -12,11 +22,13 @@ const userSchema = new Schema({
         unique: true,
         trim: true
     },
-    password:{
+    password: {
         type: String,
-        required: true,
+        required: function() {
+          return !this.isOAuthUser; 
+        },
         trim: true
-    },
+      },
     image:{
         type: String,
         trim: true,
@@ -29,6 +41,7 @@ const userSchema = new Schema({
         required: false,
         default: ""
     },
+    isOAuthUser: { type: Boolean, default: false },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
 }, {timestamps: true})

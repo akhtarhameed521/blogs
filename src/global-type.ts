@@ -38,7 +38,7 @@ type resetPasswordTypes ={
 type CreateBlogTypes = {  
     title: string,
     content: string,
-    category: string,
+   
     tags: string[]
     userImage?: File | null
     createdAt?: Date | any

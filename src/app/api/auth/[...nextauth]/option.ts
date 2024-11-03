@@ -6,6 +6,7 @@ import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
+import Credentials from "next-auth/providers/credentials";
 
 // Extend the JWT and Session interfaces
 declare module "next-auth" {
@@ -40,10 +41,11 @@ export const authOption: AuthOptions = {
         const findUser = await User.findOne({ email: user.email });
         if (findUser) return true;
         await User.create({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
+          googleId: user.id, // or user.googleId if that's how it's returned
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        isOAuthUser: true, // Ensure password is not required
         });
         return true;
       } catch (error) {
@@ -73,32 +75,34 @@ export const authOption: AuthOptions = {
     },
   },
   providers: [
-    CredentialsProvider({
+    Credentials({
       name: "Welcome Back",
       type: "credentials",
+
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "Enter your email" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "Enter your email",
+        },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        connectDB();
+      async authorize(credentials, req) {
+        connectDB()
+        
         const user = await User.findOne({ email: credentials?.email });
-
-        if (!user) {
-          throw new Error('No user found with this email');
+        if (user) {
+          return user;
+        } else {
+          return null;
         }
-
-        const isValidPassword = await bcrypt.compare(credentials?.password || "", user.password);
-        if (!isValidPassword) {
-          throw new Error('Invalid credentials');
-        }
-
-        return user;
       },
     }),
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
+    
   ],
 };
