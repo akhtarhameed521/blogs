@@ -13,92 +13,72 @@ import {
   getUser,
 } from "./api";
 import { blogStore, userStore } from "./types";
+import { handleApiError, handleApiResponse } from "@/lib/response";
 
 export const useUserStore = create<userStore>((set) => ({
   users: [],
   apiError: null,
+  apiSuccess: '',
+
   createUser: async (newUser: UserRegisterType) => {
     try {
       const createdUser = await userRegister(newUser);
       set((state) => ({
         users: [...state.users, createdUser],
         apiError: null,
+        apiSuccess: 'User created successfully',
       }));
     } catch (error: any) {
-      const errorObj: { [key: string]: string } = {};
-
-      if (error.response?.data?.errors) {
-        error.response.data.errors.forEach(
-          (err: { field: string; message: string }) => {
-            errorObj[err.field] = err.message;
-          }
-        );
-      } else if (error.response?.data?.error) {
-        errorObj.general = error.response.data.error;
-      } else {
-        errorObj.general = "An unexpected error occurred";
-      }
-
-      set({ apiError: errorObj });
+      handleApiError(set, error);
     }
   },
+
   loadUser: async () => {
-    const users = await getAllUsers();
-    set({ users });
+    try {
+      const users = await getAllUsers();
+      set({ users, apiError: null, apiSuccess: 'Users loaded successfully' });
+    } catch (error: any) {
+      handleApiError(set, error);
+    }
   },
 
   getUser: async (id: string) => {
     try {
-      await getUser(id);
-      set({ apiError: null });
+      const user = await getUser(id);
+      handleApiResponse(set, user, "User fetched successfully");
     } catch (error: any) {
-      const errorObj = {
-        general: error.response?.data?.error || "An unexpected error occurred",
-      };
-      set({ apiError: errorObj });
+      handleApiError(set, error);
+    }
+  },
+
+  updateUser: async (id: string, updatedUser: UpdateUserType) => {
+    try {
+      const response = await updateRegister(id, updatedUser);
+      handleApiResponse(set, response, "User updated successfully");
+    } catch (error: any) {
+      handleApiError(set, error);
     }
   },
 
   forgetPassword: async (emailData: ForgotPasswordTypes) => {
     try {
       await forgetPassword(emailData);
-      set({ apiError: null });
+      set({ apiError: null, apiSuccess: 'Password reset link sent' });
     } catch (error: any) {
-      const errorObj = {
-        general: error.response?.data?.error || "An unexpected error occurred",
-      };
-      set({ apiError: errorObj });
+      handleApiError(set, error);
     }
   },
 
-  resetPassword: async ({
-    token,
-    password,
-    confirmPassword,
-  }: resetPasswordTypes) => {
+  resetPassword: async ({ token, password, confirmPassword }: resetPasswordTypes) => {
     try {
       await resetPasswordAPI({ token, password, confirmPassword });
-      set({ apiError: null });
+      set({ apiError: null, apiSuccess: 'Password reset successfully' });
     } catch (error: any) {
-      const errorObj = {
-        general: error.response?.data?.error || "An unexpected error occurred",
-      };
-      set({ apiError: errorObj });
-    }
-  },
-
-  updateUser: async (id: string, updatedUser: UpdateUserType) => {
-    try {
-      await updateRegister(id, updatedUser);
-      set({ apiError: null });
-    } catch (error: any) {
-      const errorObj = {
-        general: error.response?.data?.error || "An unexpected error occurred",
-      };
-      set({ apiError: errorObj });
+      handleApiError(set, error);
     }
   },
 }));
+
 
 export const useBlogStore = create<blogStore>((set) => ({
   blogs: [],

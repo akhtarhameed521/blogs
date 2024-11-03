@@ -1,6 +1,7 @@
 export type userStore = {
     users: Array<UserRegisterType>,
     apiError: { [key: string]: string } | null;
+    apiSuccess: string
     loadUser: () => Promise<void>,
     getUser : (id: string) =>  Promise<void>
     createUser: (value: UserRegisterType) => Promise<void>,

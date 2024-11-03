@@ -7,7 +7,7 @@ import { useUserStore } from '@/store/store';
 import { useSession } from 'next-auth/react';
 
 export default function AccountPage() {
-  const { updateUser, apiError } = useUserStore();
+  const { updateUser, apiError, apiSuccess } = useUserStore();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [auth, setAuth] = useState<UserRegisterType>({
     name: "",
@@ -32,19 +32,20 @@ export default function AccountPage() {
     if (auth.password) formData.append("password", auth.password);
     if (auth.description) formData.append("description", auth.description);
     if (profilePicture) {
-      formData.append("image", profilePicture);
+        formData.append("image", profilePicture);
     }
 
-    setLoading(true); // Start loading spinner
+    setLoading(true);
     try {
-      await updateUser(data?.user.id as string, formData); // Ensure updateUser accepts FormData
-      setSuccessMessage("Profile updated successfully");
+        await updateUser(data?.user.id as string, formData); // Pass FormData
+        setSuccessMessage("Profile updated successfully");
     } catch (error) {
-      console.error("Error updating profile:", error);
+        console.error("Error updating profile:", error);
     } finally {
-      setLoading(false); // Stop loading spinner
+        setLoading(false);
     }
-  };
+};
+
 
   return (
     <div className="flex h-screen">
@@ -117,7 +118,7 @@ export default function AccountPage() {
         </div>
 
         {/* Success/Error Messages */}
-        {successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
+        {apiSuccess && <p className="text-green-600 mb-4">{apiSuccess}</p>}
         {apiError && <p className="text-red-600 mb-4">{apiError.general}</p>}
 
         {/* Save Button with Loading Spinner */}

@@ -16,7 +16,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true); // Start loading
+    setLoading(true); 
 
     const res = await signIn('credentials', {
       redirect: false,

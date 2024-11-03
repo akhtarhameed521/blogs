@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useUserStore } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { useParams, useSearchParams } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 interface ResetPasswordTypes {
   token: string; // Ensure token is a string
@@ -15,7 +16,7 @@ export default function ResetPasswordPage() {
   const token = searchParams.get('token');
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { resetPassword, apiError } = useUserStore();
+  const { resetPassword, apiError, apiSuccess } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -44,7 +45,7 @@ export default function ResetPasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label className="block text-gray-700">Password:</label>
-            <input
+            <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -54,7 +55,7 @@ export default function ResetPasswordPage() {
           </div>
           <div className="space-y-2">
             <label className="block text-gray-700">Confirm Password:</label>
-            <input
+            <Input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -62,38 +63,41 @@ export default function ResetPasswordPage() {
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
             />
           </div>
-          <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={loading}>
-            {loading ? (
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8H4z"
-                ></path>
-              </svg>
-            ) : (
-              "Reset Password"
-            )}
-          </Button>
+          <div className=" w-full text-center " >
+            <Button type="submit"  disabled={loading}>
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+              ) : (
+                "Reset Password"
+              )}
+            </Button>
+
+          </div>
         </form>
         {apiError?.general && (
           <p className="text-center text-red-600 mt-4">{apiError.general}</p>
         )}
-        {successMessage && (
-          <p className="text-center text-green-600 mt-4">{successMessage}</p>
+        {apiSuccess && (
+          <p className="text-center text-green-600 mt-4">{apiSuccess}</p>
         )}
       </div>
     </div>
