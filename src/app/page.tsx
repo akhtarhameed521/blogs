@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 
 export default function Home() {
-  const {  status } = useSession();
+  const { status } = useSession();
   const { blogs = [], getBlogs } = useBlogStore();
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
@@ -18,26 +18,20 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "authenticated") { 
-     
-      getBlogs(undefined, page, limit, search)
+    if (status === "authenticated") {
       setLoading(false);
+      getBlogs(undefined, page, limit, search);
     }
   }, [page]);
-  
 
   const handleSearch = () => {
     setLoading(true);
     setPage(1); // Reset to the first page for new search results
-    getBlogs(undefined, 1, limit, search).finally(() =>
-      setLoading(false)
-    );
+    getBlogs(undefined, 1, limit, search).finally(() => setLoading(false));
   };
 
   const handleNextPage = () => setPage((prev) => prev + 1);
   const handlePreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
-
-  
 
   if (loading) {
     return (
@@ -119,7 +113,6 @@ export default function Home() {
             />
             <Button onClick={handleSearch}>Search</Button>
           </div>
-         
 
           {blogs.length ? (
             blogs.map((blog) => (
@@ -170,87 +163,99 @@ export default function Home() {
           )}
           {/* Pagination Controls */}
           <div className="flex justify-between mt-6">
-            <Button
-             
-              disabled={page === 1}
-              onClick={handlePreviousPage}
-            >
+            <Button disabled={page === 1} onClick={handlePreviousPage}>
               Previous
             </Button>
             <span>Page {page}</span>
-            <Button  onClick={handleNextPage}>
-              Next
-            </Button>
+            <Button onClick={handleNextPage}>Next</Button>
           </div>
         </div>
         {/* Sidebar Column */}
         <aside className="space-y-6">
-  {/* Top Discussions */}
-  <div className="p-5 bg-white shadow-lg rounded-lg">
-    <h3 className="text-xl font-semibold mb-3">Top Discussions</h3>
-    <ul className="space-y-2">
-      <li>How to Improve Blog Writing</li>
-      <li>The Future of Web Development</li>
-      <li>Tips for Learning JavaScript</li>
-      <li>AI in Software Development</li>
-      <li>Scaling Applications Efficiently</li>
-    </ul>
-  </div>
+          {/* Top Discussions */}
+          <div className="p-5 bg-white shadow-lg rounded-lg">
+            <h3 className="text-xl font-semibold mb-3">Top Discussions</h3>
+            <ul className="space-y-2">
+              <li>How to Improve Blog Writing</li>
+              <li>The Future of Web Development</li>
+              <li>Tips for Learning JavaScript</li>
+              <li>AI in Software Development</li>
+              <li>Scaling Applications Efficiently</li>
+            </ul>
+          </div>
 
-  {/* Top Tags */}
-  <div className="p-5 bg-white shadow-lg rounded-lg">
-    <h3 className="text-xl font-semibold mb-3">Top Tags</h3>
-    <div className="flex flex-wrap gap-2">
-      <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
-        JavaScript
-      </span>
-      <span className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full">
-        Web Development
-      </span>
-      <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full">
-        React
-      </span>
-      <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full">
-        Node.js
-      </span>
-      <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
-        AI & ML
-      </span>
-    </div>
-  </div>
+          {/* Top Tags */}
+          <div className="p-5 bg-white shadow-lg rounded-lg">
+            <h3 className="text-xl font-semibold mb-3">Top Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
+                JavaScript
+              </span>
+              <span className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full">
+                Web Development
+              </span>
+              <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full">
+                React
+              </span>
+              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                Node.js
+              </span>
+              <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
+                AI & ML
+              </span>
+            </div>
+          </div>
 
-  {/* Popular Authors */}
-  <div className="p-5 bg-white shadow-lg rounded-lg">
-    <h3 className="text-xl font-semibold mb-3">Popular Authors</h3>
-    <ul className="space-y-2">
-      <li>John Doe - React & JavaScript Expert</li>
-      <li>Jane Smith - Full Stack Developer</li>
-      <li>Mark T. - Cloud & DevOps Specialist</li>
-    </ul>
-  </div>
+          {/* Popular Authors */}
+          <div className="p-5 bg-white shadow-lg rounded-lg">
+            <h3 className="text-xl font-semibold mb-3">Popular Authors</h3>
+            <ul className="space-y-2">
+              <li>John Doe - React & JavaScript Expert</li>
+              <li>Jane Smith - Full Stack Developer</li>
+              <li>Mark T. - Cloud & DevOps Specialist</li>
+            </ul>
+          </div>
 
-  {/* Recent Articles */}
-  <div className="p-5 bg-white shadow-lg rounded-lg">
-    <h3 className="text-xl font-semibold mb-3">Recent Articles</h3>
-    <ul className="space-y-2">
-      <li>Understanding the DOM in Depth</li>
-      <li>React's Newest Features Explained</li>
-      <li>Optimizing Web Performance</li>
-      <li>Security Tips for Web Developers</li>
-    </ul>
-  </div>
+          {/* Recent Articles */}
+          <div className="p-5 bg-white shadow-lg rounded-lg">
+            <h3 className="text-xl font-semibold mb-3">Recent Articles</h3>
+            <ul className="space-y-2">
+              <li>Understanding the DOM in Depth</li>
+              <li>React's Newest Features Explained</li>
+              <li>Optimizing Web Performance</li>
+              <li>Security Tips for Web Developers</li>
+            </ul>
+          </div>
 
-  {/* Recommended Resources */}
-  <div className="p-5 bg-white shadow-lg rounded-lg">
-    <h3 className="text-xl font-semibold mb-3">Recommended Resources</h3>
-    <ul className="space-y-2">
-      <li><a href="#" className="text-indigo-600 hover:underline">MDN Web Docs</a></li>
-      <li><a href="#" className="text-indigo-600 hover:underline">JavaScript.info</a></li>
-      <li><a href="#" className="text-indigo-600 hover:underline">Frontend Masters</a></li>
-      <li><a href="#" className="text-indigo-600 hover:underline">CSS-Tricks</a></li>
-    </ul>
-  </div>
-</aside>
+          {/* Recommended Resources */}
+          <div className="p-5 bg-white shadow-lg rounded-lg">
+            <h3 className="text-xl font-semibold mb-3">
+              Recommended Resources
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="#" className="text-indigo-600 hover:underline">
+                  MDN Web Docs
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-indigo-600 hover:underline">
+                  JavaScript.info
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-indigo-600 hover:underline">
+                  Frontend Masters
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-indigo-600 hover:underline">
+                  CSS-Tricks
+                </a>
+              </li>
+            </ul>
+          </div>
+        </aside>
         {/* ... Sidebar code here */}
       </div>
     </div>
