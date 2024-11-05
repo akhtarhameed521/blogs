@@ -23,11 +23,7 @@ const blogSchema = new Schema({
         trim : true,
         required: true
     },
-    category: {
-        type: String,
-        trim : true,
-        required: true
-    },
+  
     tags: {
         type: Array,
         trim : true,

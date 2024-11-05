@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/store";
 
 export default function RegisterPage() {
@@ -13,11 +14,17 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
+  const [loading, setLoading] = useState(false); // New loading state
   const { createUser, apiError } = useUserStore();
+  const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createUser(auth); 
+    setLoading(true); 
+    await createUser(auth);
+    setLoading(false); 
+    router.push('/login')
+    
   };
 
   return (
@@ -111,8 +118,31 @@ export default function RegisterPage() {
             )}
           </div>
 
-          <Button type="submit" className="w-full">
-            Sign Up
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white mx-auto"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+            ) : (
+              "Sign Up"
+            )}
           </Button>
         </form>
         <p className="text-sm text-center text-gray-600 mt-6">

@@ -18,11 +18,13 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    setLoading(true);
-    getBlogs(undefined, page, limit, search).finally(() =>
-      setLoading(false)
-    );
-  }, [status, getBlogs, page]);
+    if (status === "authenticated") { 
+     
+      getBlogs(undefined, page, limit, search)
+      setLoading(false);
+    }
+  }, [page]);
+  
 
   const handleSearch = () => {
     setLoading(true);
@@ -169,14 +171,14 @@ export default function Home() {
           {/* Pagination Controls */}
           <div className="flex justify-between mt-6">
             <Button
-              className="bg-indigo-500"
+             
               disabled={page === 1}
               onClick={handlePreviousPage}
             >
               Previous
             </Button>
             <span>Page {page}</span>
-            <Button className="bg-indigo-500" onClick={handleNextPage}>
+            <Button  onClick={handleNextPage}>
               Next
             </Button>
           </div>

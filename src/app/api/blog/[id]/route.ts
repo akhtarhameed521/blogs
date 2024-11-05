@@ -17,7 +17,7 @@ export async function GET(request : NextRequest, {params} : {params: any}){
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     try {
         const { id } = params;
-        const { title, content, tags, category, images } = await request.json();
+        const { title, content, tags, images } = await request.json();
 
         const blog = await Blog.findById(id);
         if (!blog) {
@@ -28,7 +28,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         blog.title = title || blog.title;
         blog.content = content || blog.content;
         blog.tags = tags || blog.tags;
-        blog.category = category || blog.category;
+       
        
         const updatedBlog = await blog.save();
         return NextResponse.json(updatedBlog, { status: 200 });

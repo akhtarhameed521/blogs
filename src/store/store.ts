@@ -91,9 +91,13 @@ export const useBlogStore = create<blogStore>((set) => ({
   createBlog: async (newBlog: CreateBlogTypes): Promise<CreateBlogTypes> => {
     set({ loading: true });
     const response = await createBlog(newBlog);
-    set((state) => ({ blogs: [...state.blogs, response], loading: false }));
+    set((state) => ({
+      blogs: Array.isArray(state.blogs) ? [...state.blogs, response] : [response],
+      loading: false,
+    }));
     return response;
   },
+  
 
   getBlogs: async (userId, page = 1, limit = 10, title = "", sort = "latest") => {
     set({ loading: true });

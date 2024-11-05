@@ -7,12 +7,12 @@ import { getServerSession } from "next-auth";
 import { authOption } from "./api/auth/[...nextauth]/option";
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "/fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+  src: "/fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -27,17 +27,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOption);
-
-  
- 
+  const session = await getServerSession(authOption); // Make sure `authOption` is correct and properly imported
 
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-100 `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-100`}
       >
-        <NextAuthSessionProvider session={session} >
+        <NextAuthSessionProvider session={session}>
           <Navbar />
           {children}
         </NextAuthSessionProvider>

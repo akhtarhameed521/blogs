@@ -4,7 +4,6 @@ import { UploadImage } from "@/lib/uploadImage";
 import { Blog } from "@/models/blog.models";
 import { getServerSession } from "next-auth";
 import { authOption } from "../auth/[...nextauth]/option";
-// import { authOptions } from "@/path/to/your/nextauth";  // Adjust the import path accordingly
 
 export async function POST(request: Request) {
     try {
@@ -15,18 +14,15 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { title, content, postedBy, tags, category, userImage } = await request.json();
+        const { title, content, postedBy, tags,  userImage } = await request.json();
 
-        
-        
-        // You can store either the short URL directly or just the public ID
         const newPost = {
             postedBy: session.user.name,
             userId: session.user.id,
             title,
             content: content, 
             tags,
-            category,
+           
             userImage: session.user.image || ""
         }        
         const response = await Blog.create(newPost);

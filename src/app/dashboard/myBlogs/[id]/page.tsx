@@ -18,7 +18,6 @@ export default function EditBlogPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
-  const [category, setCategory] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -31,7 +30,7 @@ export default function EditBlogPage() {
       setTitle(selectedBlog.title);
       setContent(selectedBlog.content);
       setTags(selectedBlog.tags.join(", "));
-      setCategory(selectedBlog.category);
+     
     }
   }, [selectedBlog]);
 
@@ -41,10 +40,10 @@ export default function EditBlogPage() {
         title,
         content,
         tags: tags.split(",").map((tag) => tag.trim()),
-        category,
+       
       };
       await editBlogs(id as string, updatedData);
-      router.push("/myBlogs");
+      
     } catch (error) {
       console.error("Failed to edit post", error);
       alert("An error occurred while editing the post.");
@@ -107,17 +106,7 @@ export default function EditBlogPage() {
             className="w-full mt-6 mb-6 px-4 py-2 border rounded-md"
           />
 
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full mb-6 px-4 py-2 border rounded-md bg-white text-gray-800"
-          >
-            <option value="">Select Category</option>
-            <option value="Technology">Technology</option>
-            <option value="Fashion">Fashion</option>
-            <option value="Health and Fitness">Health and Fitness</option>
-            <option value="Business Blogs">Business Blogs</option>
-          </select>
+         
 
           <Button
             onClick={handleSubmit}
